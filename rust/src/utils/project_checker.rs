@@ -1,6 +1,6 @@
 use anyhow::{Context, Result};
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 use crate::types::{PackageJson, PackageManager, ProjectInfo};
 
@@ -11,37 +11,49 @@ pub fn check_project(project_path: &Path) -> Result<ProjectInfo> {
     // 检查package.json是否存在
     let package_json_path = project_path.join("package.json");
     if !package_json_path.exists() {
-        result.errors.push("未找到package.json文件，请确保在Vue项目根目录中运行此工具".to_string());
+        result
+            .errors
+            .push("未找到package.json文件，请确保在Vue项目根目录中运行此工具".to_string());
         return Ok(result);
     }
 
     // 读取package.json
-    let package_json_content = fs::read_to_string(&package_json_path)
-        .context("读取package.json失败")?;
-    let package_json: PackageJson = serde_json::from_str(&package_json_content)
-        .context("解析package.json失败")?;
+    let package_json_content =
+        fs::read_to_string(&package_json_path).context("读取package.json失败")?;
+    let package_json: PackageJson =
+        serde_json::from_str(&package_json_content).context("解析package.json失败")?;
 
     // 检查是否为Vue项目
-    let has_vue_dep = package_json.dependencies.as_ref()
+    let has_vue_dep = package_json
+        .dependencies
+        .as_ref()
         .map(|deps| deps.contains_key("vue"))
         .unwrap_or(false);
-    let has_vue_dev_dep = package_json.devDependencies.as_ref()
+    let has_vue_dev_dep = package_json
+        .dev_dependencies
+        .as_ref()
         .map(|deps| deps.contains_key("vue"))
         .unwrap_or(false);
 
     if !has_vue_dep && !has_vue_dev_dep {
-        result.errors.push("未检测到Vue依赖，请确保这是一个Vue项目".to_string());
+        result
+            .errors
+            .push("未检测到Vue依赖，请确保这是一个Vue项目".to_string());
     } else {
         result.is_vue = true;
     }
 
     // 检查是否使用Vite
-    let has_vite_dev_dep = package_json.devDependencies.as_ref()
+    let has_vite_dev_dep = package_json
+        .dev_dependencies
+        .as_ref()
         .map(|deps| deps.contains_key("vite"))
         .unwrap_or(false);
 
     if !has_vite_dev_dep {
-        result.errors.push("未检测到Vite依赖，此工具仅支持Vite项目".to_string());
+        result
+            .errors
+            .push("未检测到Vite依赖，此工具仅支持Vite项目".to_string());
     } else {
         result.is_vite = true;
 
@@ -54,7 +66,9 @@ pub fn check_project(project_path: &Path) -> Result<ProjectInfo> {
         } else if vite_config_js_path.exists() {
             result.vite_config_path = Some(vite_config_js_path);
         } else {
-            result.errors.push("未找到vite.config.ts或vite.config.js文件".to_string());
+            result
+                .errors
+                .push("未找到vite.config.ts或vite.config.js文件".to_string());
         }
     }
 

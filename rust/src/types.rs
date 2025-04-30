@@ -1,6 +1,6 @@
-use std::path::PathBuf;
 use serde::{Deserialize, Serialize};
 use std::fmt;
+use std::path::PathBuf;
 
 /// 支持的组件库类型
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -81,6 +81,7 @@ impl Default for ProjectInfo {
 
 /// 组件库配置
 pub struct LibraryConfig {
+    #[allow(dead_code)]
     pub name: String,
     pub dependencies: Vec<String>,
     pub resolver_import: String,
@@ -97,7 +98,9 @@ pub fn get_library_config(library: Library) -> LibraryConfig {
                 "unplugin-auto-import".to_string(),
                 "unplugin-vue-components".to_string(),
             ],
-            resolver_import: "import { ElementPlusResolver } from \"unplugin-vue-components/resolvers\";".to_string(),
+            resolver_import:
+                "import { ElementPlusResolver } from \"unplugin-vue-components/resolvers\";"
+                    .to_string(),
             resolver_name: "ElementPlusResolver".to_string(),
         },
         Library::AntDesignVue => LibraryConfig {
@@ -107,7 +110,9 @@ pub fn get_library_config(library: Library) -> LibraryConfig {
                 "unplugin-auto-import".to_string(),
                 "unplugin-vue-components".to_string(),
             ],
-            resolver_import: "import { AntDesignVueResolver } from \"unplugin-vue-components/resolvers\";".to_string(),
+            resolver_import:
+                "import { AntDesignVueResolver } from \"unplugin-vue-components/resolvers\";"
+                    .to_string(),
             resolver_name: "AntDesignVueResolver".to_string(),
         },
         Library::NaiveUi => LibraryConfig {
@@ -117,7 +122,8 @@ pub fn get_library_config(library: Library) -> LibraryConfig {
                 "unplugin-auto-import".to_string(),
                 "unplugin-vue-components".to_string(),
             ],
-            resolver_import: "import { NaiveUiResolver } from \"unplugin-vue-components/resolvers\";".to_string(),
+            resolver_import:
+                "import { NaiveUiResolver } from \"unplugin-vue-components/resolvers\";".to_string(),
             resolver_name: "NaiveUiResolver".to_string(),
         },
         Library::Vant => LibraryConfig {
@@ -127,7 +133,8 @@ pub fn get_library_config(library: Library) -> LibraryConfig {
                 "unplugin-auto-import".to_string(),
                 "unplugin-vue-components".to_string(),
             ],
-            resolver_import: "import { VantResolver } from \"unplugin-vue-components/resolvers\";".to_string(),
+            resolver_import: "import { VantResolver } from \"unplugin-vue-components/resolvers\";"
+                .to_string(),
             resolver_name: "VantResolver".to_string(),
         },
     }
@@ -137,5 +144,6 @@ pub fn get_library_config(library: Library) -> LibraryConfig {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PackageJson {
     pub dependencies: Option<serde_json::Map<String, serde_json::Value>>,
-    pub devDependencies: Option<serde_json::Map<String, serde_json::Value>>,
+    #[serde(rename = "devDependencies")]
+    pub dev_dependencies: Option<serde_json::Map<String, serde_json::Value>>,
 }

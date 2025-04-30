@@ -3,12 +3,12 @@ use regex::Regex;
 use std::fs;
 use std::path::Path;
 
-use crate::types::{Library, ProjectInfo, get_library_config};
+use crate::types::{get_library_config, Library, ProjectInfo};
 
 /// 更新Vite配置
 pub fn update_vite_config(
     library: Library,
-    project_path: &Path,
+    _project_path: &Path,
     project_info: &ProjectInfo,
 ) -> Result<()> {
     // 获取组件库配置
@@ -25,7 +25,9 @@ pub fn update_vite_config(
         .context(format!("读取Vite配置文件失败: {:?}", vite_config_path))?;
 
     // 检查是否已经配置了自动导入
-    if content.contains("unplugin-auto-import/vite") && content.contains("unplugin-vue-components/vite") {
+    if content.contains("unplugin-auto-import/vite")
+        && content.contains("unplugin-vue-components/vite")
+    {
         println!("Vite配置中已存在自动导入插件，跳过配置");
         return Ok(());
     }
@@ -38,8 +40,8 @@ pub fn update_vite_config(
     ];
 
     // 查找导入语句的位置
-    let import_regex = Regex::new(r"import\s+.+\s+from\s+['].*['];?");
-    
+    let import_regex = Regex::new(r"import\s+.+\s+from\s+['].*['];?")?;
+
     let last_import_pos = import_regex
         .find_iter(&content)
         .last()
@@ -55,9 +57,13 @@ pub fn update_vite_config(
         );
     } else {
         // 如果没有找到导入语句，则添加到文件开头
-        content = format!("{}
+        content = format!(
+            "{}
 
-{}", imports.join("\n"), content);
+{}",
+            imports.join("\n"),
+            content
+        );
     }
 
     // 添加插件配置
@@ -68,34 +74,35 @@ pub fn update_vite_config(
   Components({{
     resolvers: [{}()],
   }})",
-        library_config.resolver_name,
-        library_config.resolver_name
+        library_config.resolver_name, library_config.resolver_name
     );
 
     // 查找plugins数组
     let plugins_regex = Regex::new(r"(?s)plugins\s*:\s*\[([^\]]*)\]")?;
     if let Some(plugins_match) = plugins_regex.captures(&content) {
         let plugins_content = &plugins_match[1];
-        let comma = if plugins_content.trim().is_empty() { "" } else { "," };
+        let comma = if plugins_content.trim().is_empty() {
+            ""
+        } else {
+            ","
+        };
         let updated_plugins_content = format!("{}{}{}", plugins_content, comma, plugins_config);
-        content = plugins_regex.replace(
-            &content,
-            &format!("plugins: [{}]", updated_plugins_content)
-        ).to_string();
+        content = plugins_regex
+            .replace(&content, &format!("plugins: [{}]", updated_plugins_content))
+            .to_string();
     } else {
         // 如果没有找到plugins数组，则尝试找到defineConfig函数
         let define_config_regex = Regex::new(r"(?s)defineConfig\s*\(\s*\{([^}]*)\}\s*\)")?;
         if let Some(define_config_match) = define_config_regex.captures(&content) {
             let config_content = &define_config_match[1];
-            let updated_config_content = format!(
-                "{}\n  plugins: [{}],",
-                config_content,
-                plugins_config
-            );
-            content = define_config_regex.replace(
-                &content,
-                &format!("defineConfig({{{}}})", updated_config_content)
-            ).to_string();
+            let updated_config_content =
+                format!("{}\n  plugins: [{}],", config_content, plugins_config);
+            content = define_config_regex
+                .replace(
+                    &content,
+                    &format!("defineConfig({{{}}})", updated_config_content),
+                )
+                .to_string();
         } else {
             anyhow::bail!("无法找到Vite配置中的plugins数组或defineConfig函数");
         }

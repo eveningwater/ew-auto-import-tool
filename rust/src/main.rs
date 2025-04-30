@@ -9,12 +9,12 @@ mod config;
 mod types;
 mod utils;
 
-use crate::types::{Library, ProjectInfo};
-use crate::utils::project_checker::check_project;
-use crate::utils::dependency_manager::install_dependencies;
-use crate::utils::vite_config_manager::update_vite_config;
-use crate::utils::ts_config_manager::update_ts_config;
+use crate::types::Library;
 use crate::utils::declaration_generator::generate_declaration_files;
+use crate::utils::dependency_manager::install_dependencies;
+use crate::utils::project_checker::check_project;
+use crate::utils::ts_config_manager::update_ts_config;
+use crate::utils::vite_config_manager::update_vite_config;
 
 #[derive(Parser, Debug)]
 #[command(name = "ew-auto-import-tool")]
@@ -79,7 +79,8 @@ async fn configure_auto_import(library: Library, project_path: PathBuf) -> Resul
     Ok(true)
 }
 
-fn main() -> Result<()> {
+#[tokio::main]
+async fn main() -> Result<()> {
     let cli = Cli::parse();
     let project_path = std::fs::canonicalize(cli.path)?;
 
@@ -87,7 +88,10 @@ fn main() -> Result<()> {
 
     // 检查项目路径是否存在
     if !project_path.exists() {
-        eprintln!("{}", format!("错误: 项目路径 {:?} 不存在", project_path).red());
+        eprintln!(
+            "{}",
+            format!("错误: 项目路径 {:?} 不存在", project_path).red()
+        );
         std::process::exit(1);
     }
 
@@ -95,13 +99,8 @@ fn main() -> Result<()> {
     let library = match cli.library {
         Some(lib) => lib.into(),
         None => {
-            let options = vec![
-                "Element Plus",
-                "Ant Design Vue",
-                "Naive UI",
-                "Vant",
-            ];
-            
+            let options = vec!["Element Plus", "Ant Design Vue", "Naive UI", "Vant"];
+
             let selection = Select::new("请选择要配置的组件库:", options)
                 .prompt()
                 .expect("选择组件库失败");
@@ -135,7 +134,9 @@ fn main() -> Result<()> {
     // 开始配置
     let mut spinner = Spinner::new(Spinners::Dots9, "正在配置自动导入...".into());
 
-    match configure_auto_import(library, project_path) {
+    let result = configure_auto_import(library, project_path).await;
+
+    match result {
         Ok(true) => {
             spinner.stop_with_message("配置完成!".green().to_string());
             println!("{}", "\n✨ 组件库按需导入已成功配置!\n".green());
