@@ -9,6 +9,20 @@ export default defineConfig({
   logo: "/favicon.svg",
   icon: "/favicon.svg",
   lang: "zh",
+  markdown: {
+    // 配置代码块的语法高亮
+    codeHighlighter: "prism",
+    highlightLanguages: [
+      ["js", "javascript"],
+      ["ts", "typescript"],
+      ["jsx", "tsx"],
+      ["xml", "xml-doc"],
+      ["md", "markdown"],
+      ["mdx", "tsx"],
+      ["vue", "vue"],
+    ],
+    showLineNumbers: true,
+  },
   locales: [
     {
       lang: "zh",
