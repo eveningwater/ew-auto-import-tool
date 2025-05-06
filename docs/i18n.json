@@ -1,0 +1,74 @@
+{
+  "guide": {
+    "zh": "指南",
+    "en": "Guide"
+  },
+  "api": {
+    "zh": "API",
+    "en": "API"
+  },
+  "examples": {
+    "zh": "示例",
+    "en": "Examples"
+  },
+  "introduction": {
+    "zh": "介绍",
+    "en": "Introduction"
+  },
+  "gettingStarted": {
+    "zh": "快速开始",
+    "en": "Getting Started"
+  },
+  "usage": {
+    "zh": "使用方法",
+    "en": "Usage"
+  },
+  "supportedLibraries": {
+    "zh": "支持的组件库",
+    "en": "Supported Libraries"
+  },
+  "implementation": {
+    "zh": "实现原理",
+    "en": "Implementation"
+  },
+  "coreAPI": {
+    "zh": "核心API",
+    "en": "Core API"
+  },
+  "projectChecker": {
+    "zh": "项目检查器",
+    "en": "Project Checker"
+  },
+  "dependencyManager": {
+    "zh": "依赖管理器",
+    "en": "Dependency Manager"
+  },
+  "viteConfigManager": {
+    "zh": "Vite配置管理器",
+    "en": "Vite Config Manager"
+  },
+  "tsConfigManager": {
+    "zh": "TypeScript配置管理器",
+    "en": "TypeScript Config Manager"
+  },
+  "declarationGenerator": {
+    "zh": "声明文件生成器",
+    "en": "Declaration Generator"
+  },
+  "basicExample": {
+    "zh": "基本示例",
+    "en": "Basic Example"
+  },
+  "projectStructure": {
+    "zh": "项目结构对比",
+    "en": "Project Structure Comparison"
+  },
+  "apiReference": {
+    "zh": "API参考",
+    "en": "API Reference"
+  },
+  "languageSwitcher": {
+    "zh": "切换语言",
+    "en": "Switch Language"
+  }
+}

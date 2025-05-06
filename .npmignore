@@ -1,6 +1,6 @@
 node_modules/*
 npm-debug.log
-docs
+docs/*
 examples/*
 yarn.lock
 package-lock.json
