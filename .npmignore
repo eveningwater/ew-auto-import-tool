@@ -1,0 +1,13 @@
+node_modules/*
+npm-debug.log
+docs/*
+examples/*
+yarn.lock
+package-lock.json
+.gitignore
+src/*
+jest.config.js
+coverage/*
+pnpm-workspace.yaml
+pnpm-lock.yaml
+
