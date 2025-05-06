@@ -5,9 +5,11 @@
   "scripts": {
     "dev": "rspress dev",
     "build": "rspress build",
-    "preview": "rspress preview"
+    "preview": "rspress preview",
+    "release": "npm run build && gh-pages -d ew-auto-import-tool"
   },
   "dependencies": {
+    "gh-pages": "^6.3.0",
     "rspress": "^1.0.0"
   }
 }
