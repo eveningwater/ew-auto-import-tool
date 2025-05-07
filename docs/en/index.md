@@ -8,7 +8,7 @@ hero:
   actions:
     - theme: brand
       text: Getting Started
-      link: /en/guide/getting-started
+      link: /guide/getting-started
     - theme: alt
       text: GitHub
       link: https://github.com/eveningwater/ew-auto-import-tool
